@@ -40,7 +40,7 @@ end
 
 function CheckFuel()
     local fuelLevel = turtle.getFuelLevel()
-    if fuelLevel < 10 then
+    if fuelLevel < 40 then
         GetItemIndex("minecraft:coal")
         turtle.refuel()
     end
