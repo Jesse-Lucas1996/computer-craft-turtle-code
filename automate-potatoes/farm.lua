@@ -37,6 +37,10 @@ function GoHome()
     CheckFuel()
     GetItemIndex("minecraft:potatoes")
     sleep(60)
+    for i = 1, 60, 1 do
+        print("sleeping for " .. i .. " seconds")
+        sleep(1)
+    end
 end
 
 function CheckFuel()
