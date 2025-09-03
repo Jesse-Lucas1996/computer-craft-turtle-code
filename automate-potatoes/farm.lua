@@ -36,6 +36,7 @@ function GoHome()
     turtle.turnLeft()
     CheckFuel()
     GetItemIndex("minecraft:potatoes")
+    sleep(60)
 end
 
 function CheckFuel()

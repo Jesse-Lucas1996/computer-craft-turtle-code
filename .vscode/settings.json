@@ -4,6 +4,7 @@
         "wget",
         "fs",
         "http",
-        "shell"
+        "shell",
+        "sleep"
     ]
 }
