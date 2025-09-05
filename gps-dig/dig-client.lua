@@ -17,6 +17,7 @@ function Main()
             local x, y, z = string.match(input, "add (%S+) (%S+) (%S+)")
             if x and y and z then
                 AddMiningLocation(tonumber(x), tonumber(y), tonumber(z))
+                AssignMiningJobs()
             else
                 print("Usage: add <x> <y> <z>")
             end
@@ -28,12 +29,44 @@ function Main()
         else
             print("Unknown command. Use 'add', 'status', or 'quit'")
         end
-        
-        CheckForTurtleResponses()
-        AssignMiningJobs()
-        sleep(0.1)
     end
 end
+
+function BackgroundListener()
+    while true do
+        local event, side, channel, replyChannel, message = os.pullEvent("modem_message")
+        
+        if type(message) == "table" then
+            if message.type == "register" then
+                activeTurtles[message.id] = {
+                    status = "idle",
+                    lastSeen = os.clock()
+                }
+                print("\nTurtle " .. message.id .. " registered")
+                write("> ")
+                
+            elseif message.type == "status" then
+                if activeTurtles[message.id] then
+                    activeTurtles[message.id].status = message.status
+                    activeTurtles[message.id].lastSeen = os.clock()
+                    
+                    if message.status == "completed" then
+                        print("\nTurtle " .. message.id .. " completed mining job")
+                        activeTurtles[message.id].target = nil
+                        write("> ")
+                        AssignMiningJobs()
+                    elseif message.status == "error" then
+                        print("\nTurtle " .. message.id .. " reported error: " .. (message.error or "unknown"))
+                        activeTurtles[message.id].target = nil
+                        write("> ")
+                    end
+                end
+            end
+        end
+    end
+end
+
+parallel.waitForAny(Main, BackgroundListener)
 
 function AddMiningLocation(x, y, z)
     table.insert(miningQueue, {x = x, y = y, z = z})
@@ -70,35 +103,9 @@ function SendMiningCommand(turtleId, location)
     })
 end
 
-function CheckForTurtleResponses()
-    local event, side, channel, replyChannel, message = os.pullEvent("modem_message")
-    
-    if type(message) == "table" then
-        if message.type == "register" then
-            activeTurtles[message.id] = {
-                status = "idle",
-                lastSeen = os.clock()
-            }
-            print("Turtle " .. message.id .. " registered")
-            
-        elseif message.type == "status" then
-            if activeTurtles[message.id] then
-                activeTurtles[message.id].status = message.status
-                activeTurtles[message.id].lastSeen = os.clock()
-                
-                if message.status == "completed" then
-                    print("Turtle " .. message.id .. " completed mining job")
-                elseif message.status == "error" then
-                    print("Turtle " .. message.id .. " reported error: " .. (message.error or "unknown"))
-                end
-            end
-        end
-    end
-end
-
 function ShowTurtleStatus()
     print("=== Turtle Status ===")
-    print("Active turtles: " .. table.getn(activeTurtles))
+    print("Active turtles: " .. #activeTurtles)
     for id, turtle in pairs(activeTurtles) do
         local status = turtle.status
         if turtle.target then
@@ -110,4 +117,4 @@ function ShowTurtleStatus()
     print("==================")
 end
 
-Main()
+parallel.waitForAny(Main, BackgroundListener)

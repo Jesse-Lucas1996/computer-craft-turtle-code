@@ -9,7 +9,8 @@
         "gps",
         "write",
         "peripheral",
-        "read"
+        "read",
+        "parallel"
     ],
     "Lua.diagnostics.disable": [
         "deprecated",
