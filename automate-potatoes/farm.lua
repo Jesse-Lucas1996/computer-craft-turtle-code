@@ -1,6 +1,6 @@
 function FarmPotatoes()
-    local _, block = turtle.inspect()
-    if block.name == "minecraft:potatoes" then
+    local hasBlock, block = turtle.inspect()
+    if hasBlock and block.name == "minecraft:potatoes" then
         if(block.state.age == 7) then
             turtle.dig()
             turtle.suck()
@@ -10,7 +10,13 @@ function FarmPotatoes()
             turtle.place()
             turtle.suck()
             turtle.suck()
+        end
+        MoveTowardsOtherPotatoes()
+    else
+        if hasBlock then
+            MoveTowardsOtherPotatoes()
         else
+            turtle.place()
             MoveTowardsOtherPotatoes()
         end
     end
