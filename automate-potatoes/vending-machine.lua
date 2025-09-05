@@ -1,10 +1,10 @@
 function Main()
-    KeepSucking()
  if turtle.getItemCount(1) == 0 then
-    return
+    turtle.suck()
  end
  local howManyBlocks = turtle.getItemCount(1)
  if howManyBlocks > 1 then
+    turtle.dropDown()
     DispenseItemsBasedOnNumberOfItems(howManyBlocks)
  else
     DispenseSingleItem()
@@ -20,12 +20,6 @@ end
 
 function DispenseSingleItem()
     turtle.drop()
-end
-
-function KeepSucking()
-    if turtle.getItemCount(1) > 0 then
-        turtle.suck()
-    end
 end
 
 while true do
