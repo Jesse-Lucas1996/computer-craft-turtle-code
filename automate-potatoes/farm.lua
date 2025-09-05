@@ -42,7 +42,12 @@ function GoHome()
     turtle.turnLeft()
     CheckFuel()
     GetItemIndex("minecraft:potatoes")
-    sleep(60)
+    turtle.dropDown()
+    for i = 1, 60, 1 do
+        print("Waiting... " .. i)
+        sleep(1)
+        return
+    end
 end
 
 function CheckFuel()
