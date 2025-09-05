@@ -5,6 +5,14 @@
         "fs",
         "http",
         "shell",
-        "sleep"
+        "sleep",
+        "gps",
+        "write",
+        "peripheral",
+        "read"
+    ],
+    "Lua.diagnostics.disable": [
+        "deprecated",
+        "undefined-field"
     ]
 }
