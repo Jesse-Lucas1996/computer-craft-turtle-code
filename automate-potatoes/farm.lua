@@ -28,6 +28,9 @@ function MoveTowardsOtherPotatoes()
         GoHome()
     else
         turtle.forward()
+        turtle.suck()
+        turtle.suck()
+        turtle.suck()
         turtle.turnRight()
     end
 end
@@ -37,7 +40,9 @@ function GoHome()
     turtle.turnRight()
     turtle.turnRight()
     for i = 1, 8, 1 do
+        turtle.suck()
         turtle.forward()
+        turtle.suck()
     end
     turtle.turnLeft()
     CheckFuel()
