@@ -3,7 +3,7 @@ function Main()
     turtle.suck()
  end
  local howManyBlocks = turtle.getItemCount(1)
- if howManyBlocks >= 1 then
+ if howManyBlocks > 2 then
     turtle.dropDown()
     DispenseItemsBasedOnNumberOfItems(howManyBlocks)
  else
