@@ -35,10 +35,7 @@ function GoHome()
     end
     turtle.turnLeft()
     CheckFuel()
-    local potatoFound = GetItemIndex("minecraft:potatoes")
-    if not potatoFound then
-        print("Warning: No potatoes found in inventory!")
-    end
+    GetItemIndex("minecraft:potatoes")
     sleep(60)
 end
 
@@ -49,8 +46,6 @@ function CheckFuel()
         if coalFound then
             turtle.refuel()
             print("Refueled! New fuel level: " .. turtle.getFuelLevel())
-        else
-            print("Warning: No coal found for refueling!")
         end
     end
 end
