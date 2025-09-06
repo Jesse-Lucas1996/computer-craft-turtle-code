@@ -1,4 +1,9 @@
-local modem = peripheral.find("modem") or error("No modem attached")
+local modem = peripheral.find("modem")
+if not modem then
+    print("Error: No wireless modem found!")
+    print("Please attach a wireless modem to this computer.")
+    return
+end
 modem.open(1)
 
 local activeTurtles = {}
