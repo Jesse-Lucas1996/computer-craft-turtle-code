@@ -1,0 +1,55 @@
+name: Clone to Local Machine
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  clone-to-local:
+    runs-on: self-hosted
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Set up local directory
+      run: |
+        LOCAL_DIR="$HOME/computer-craft-local"
+        echo "Setting up local directory at $LOCAL_DIR"
+        
+        # Create directory if it doesn't exist
+        mkdir -p "$LOCAL_DIR"
+        
+        # Remove existing content to ensure clean clone
+        rm -rf "$LOCAL_DIR"/*
+        
+        # Copy repository content to local directory
+        cp -r $GITHUB_WORKSPACE/* "$LOCAL_DIR/" 2>/dev/null || true
+        cp -r $GITHUB_WORKSPACE/.[^.]* "$LOCAL_DIR/" 2>/dev/null || true
+        
+        echo "Repository cloned to: $LOCAL_DIR"
+        ls -la "$LOCAL_DIR"
+        
+    - name: Set permissions
+      run: |
+        LOCAL_DIR="$HOME/computer-craft-local"
+        # Ensure proper permissions
+        chmod -R 755 "$LOCAL_DIR"
+        
+        # Make Lua scripts executable
+        find "$LOCAL_DIR" -name "*.lua" -exec chmod +x {} \;
+        
+    - name: Display clone status
+      run: |
+        LOCAL_DIR="$HOME/computer-craft-local"
+        echo "✅ Repository successfully cloned to local machine"
+        echo "📁 Location: $LOCAL_DIR"
+        echo "📊 Contents:"
+        du -sh "$LOCAL_DIR"
+        echo "📋 File structure:"
+        tree "$LOCAL_DIR" 2>/dev/null || ls -la "$LOCAL_DIR"

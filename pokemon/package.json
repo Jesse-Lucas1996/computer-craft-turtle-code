@@ -1,0 +1,20 @@
+{
+  "name": "pokemon",
+  "module": "index.ts",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "private": true,
+  "scripts": {
+    "start": "bun run index.ts"
+  },
+  "type": "module",
+  "dependencies": {
+    "@types/ws": "^8.18.1",
+    "serverboy": "^0.0.7",
+    "ws": "^8.18.3"
+  }
+}
