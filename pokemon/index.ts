@@ -6,8 +6,8 @@ import fs from 'fs'
 type Controls = 'LEFT' | 'RIGHT' | 'UP' | 'DOWN' | 'A' | 'B' | 'SELECT' | 'START'
 
 const server = https.createServer({
-  key: fs.readFileSync('./private/your-domain.key'),
-  cert: fs.readFileSync('./certs/your-domain.crt'),
+  key: fs.readFileSync('./ssl-keys/private/your-domain.key'),
+  cert: fs.readFileSync('./ssl-keys/certs/your-domain.crt'),
 });
 
 const wss = new WebSocketServer({ server })
