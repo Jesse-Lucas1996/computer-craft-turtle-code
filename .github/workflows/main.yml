@@ -12,68 +12,69 @@ clone-to-local:
 runs-on: self-hosted
 
 steps:
-- name: Checkout repository
-  uses: actions/checkout@v4
-  with:
-    fetch-depth: 0
-    
-- name: Set up local directory
-  run: |
-    LOCAL_DIR="$HOME/computer-craft-local"
-    echo "Setting up local directory at $LOCAL_DIR"
-    
-    # Create directory if it doesn't exist
-    mkdir -p "$LOCAL_DIR"
-    
-    # Remove existing content to ensure clean clone
-    rm -rf "$LOCAL_DIR"/*
-    
-    # Copy repository content to local directory
-    cp -r $GITHUB_WORKSPACE/* "$LOCAL_DIR/" 2>/dev/null || true
-    cp -r $GITHUB_WORKSPACE/.[^.]* "$LOCAL_DIR/" 2>/dev/null || true
-    
-    echo "Repository cloned to: $LOCAL_DIR"
-    ls -la "$LOCAL_DIR"
-    
-- name: Set permissions
-  run: |
-    LOCAL_DIR="$HOME/computer-craft-local"
-    # Ensure proper permissions
-    chmod -R 755 "$LOCAL_DIR"
-    
-    # Make Lua scripts executable
-    find "$LOCAL_DIR" -name "*.lua" -exec chmod +x {} \;
-    
-- name: Display clone status
-  run: |
-    LOCAL_DIR="$HOME/computer-craft-local"
-    echo "✅ Repository successfully cloned to local machine"
-    echo "📁 Location: $LOCAL_DIR"
-    echo "📊 Contents:"
-    du -sh "$LOCAL_DIR"
-    echo "📋 File structure:"
-    tree "$LOCAL_DIR" 2>/dev/null || ls -la "$LOCAL_DIR"
+  - name: Checkout repository
+    uses: actions/checkout@v4
+    with:
+      fetch-depth: 0
+      
+  - name: Set up local directory
+    run: |
+      LOCAL_DIR="$HOME/computer-craft-local"
+      echo "Setting up local directory at $LOCAL_DIR"
+      
+      # Create directory if it doesn't exist
+      mkdir -p "$LOCAL_DIR"
+      
+      # Remove existing content to ensure clean clone
+      rm -rf "$LOCAL_DIR"/*
+      
+      # Copy repository content to local directory
+      cp -r $GITHUB_WORKSPACE/* "$LOCAL_DIR/" 2>/dev/null || true
+      cp -r $GITHUB_WORKSPACE/.[^.]* "$LOCAL_DIR/" 2>/dev/null || true
+      
+      echo "Repository cloned to: $LOCAL_DIR"
+      ls -la "$LOCAL_DIR"
+      
+  - name: Set permissions
+    run: |
+      LOCAL_DIR="$HOME/computer-craft-local"
+      # Ensure proper permissions
+      chmod -R 755 "$LOCAL_DIR"
+      
+      # Make Lua scripts executable
+      find "$LOCAL_DIR" -name "*.lua" -exec chmod +x {} \;
+      
+  - name: Display clone status
+    run: |
+      LOCAL_DIR="$HOME/computer-craft-local"
+      echo "✅ Repository successfully cloned to local machine"
+      echo "📁 Location: $LOCAL_DIR"
+      echo "📊 Contents:"
+      du -sh "$LOCAL_DIR"
+      echo "📋 File structure:"
+      tree "$LOCAL_DIR" 2>/dev/null || ls -la "$LOCAL_DIR"
 
-- name: Generate SSL Keys
-  run: |
-    LOCAL_DIR="$HOME/computer-craft-local"
-    cd "$LOCAL_DIR/pokemon" || exit
-    mkdir -p ssl-keys/private ssl-keys/certs
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl-keys/private/your-domain.key -out ssl-keys/certs/your-domain.crt
+  - name: Generate SSL Keys
+    run: |
+      LOCAL_DIR="$HOME/computer-craft-local"
+      cd "$LOCAL_DIR/pokemon" || exit
+      mkdir -p ssl-keys/private ssl-keys/certs
+      openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl-keys/private/your-domain.key -out ssl-keys/certs/your-domain.crt
 
-- name: Build pokemon to podman
-  run: |
-    LOCAL_DIR="$HOME/computer-craft-local"
-    cd "$LOCAL_DIR/pokemon" || exit
-    podman build -f dockerfile -t pokemon .
-    podman run --replace -d -p 8080:8080 --name pokemon -v "$LOCAL_DIR/pokemon/ssl-keys/:/app/ssl-keys/" pokemon
+  - name: Build pokemon to podman
+    run: |
+      LOCAL_DIR="$HOME/computer-craft-local"
+      cd "$LOCAL_DIR/pokemon" || exit
+      podman build -f dockerfile -t pokemon .
+      podman run --replace -d -p 8080:8080 --name pokemon -v "$LOCAL_DIR/pokemon/ssl-keys/:/app/ssl-keys/" pokemon
 
-- name: Verify pokemon container is running
-  run: |
-    if podman ps | grep -q pokemon; then
-      echo "✅ Pokemon container is running"
-    else
-      echo "❌ Pokemon container is not running"
-      podman logs pokemon || true
-      exit 1
-    fi
+  - name: Verify pokemon container is running
+    run: |
+      if podman ps | grep -q pokemon; then
+        echo "✅ Pokemon container is running"
+      else
+        echo "❌ Pokemon container is not running"
+        podman logs pokemon || true
+        exit 1
+      fi
+
