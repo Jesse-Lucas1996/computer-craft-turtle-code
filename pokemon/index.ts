@@ -1,17 +1,21 @@
 import gameboy from './gameboy'
 import { WebSocketServer } from 'ws'
+import https from 'https'
+import fs from 'fs'
 
 type Controls = 'LEFT' | 'RIGHT' | 'UP' | 'DOWN' | 'A' | 'B' | 'SELECT' | 'START'
 
-console.log("Server has started!")
+const server = https.createServer({
+  key: fs.readFileSync('/etc/ssl/private/your-domain.key'),
+  cert: fs.readFileSync('/etc/ssl/certs/your-domain.crt'),
+});
 
-const wss = new WebSocketServer({ port: 8080 })
+const wss = new WebSocketServer({ server })
 
 wss.on('connection', function connection(ws) {
   console.log('Client connected')
   
   ws.send("hello")
-  console.log("Sent hello to client")
   
   setTimeout(() => {
     console.log("Starting game loop")
@@ -33,4 +37,6 @@ wss.on('connection', function connection(ws) {
   })
 })
 
-console.log('WebSocket server running on ws://localhost:8080')
+server.listen(8080, () => {
+  console.log('Secure WebSocket server running on wss://localhost:8080');
+});
