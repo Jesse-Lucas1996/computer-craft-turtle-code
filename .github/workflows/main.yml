@@ -53,3 +53,10 @@ jobs:
         du -sh "$LOCAL_DIR"
         echo "📋 File structure:"
         tree "$LOCAL_DIR" 2>/dev/null || ls -la "$LOCAL_DIR"
+
+    - name: Build pokemon to podman
+      run: |
+        LOCAL_DIR="$HOME/computer-craft-local"
+        cd "$LOCAL_DIR" || exit
+        podman build -t pokemon .
+        podman run -d -p 8080:8080 --name pokemon pokemon
