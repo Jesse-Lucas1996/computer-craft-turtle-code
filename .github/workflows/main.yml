@@ -59,4 +59,4 @@ jobs:
         LOCAL_DIR="$HOME/computer-craft-local"
         cd "$LOCAL_DIR/pokemon" || exit
         podman build -f dockerfile -t pokemon .
-        podman run -d -p 8080:8080 --name pokemon pokemon
+        podman run --replace -d -p 8080:8080 --name pokemon pokemon
