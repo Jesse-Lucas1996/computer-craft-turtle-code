@@ -59,4 +59,4 @@ jobs:
         LOCAL_DIR="$HOME/computer-craft-local"
         cd "$LOCAL_DIR/pokemon" || exit
         podman build -f dockerfile -t pokemon .
-        podman run --replace -d -p 8080:8080 --name pokemon -v /etc/ssl/:/app/ssl-keys/ pokemon
+        podman run --replace -d -p 8080:8080 --name pokemon -v $HOME/your-domain.key:/app/ssl-keys/your-domain.key -v $HOME/your-domain.crt:/app/ssl-keys/your-domain.crt pokemon
